@@ -11,6 +11,7 @@ import  RealmSwift
 
 class CategoryViewController: UITableViewController {
 
+    @IBOutlet weak var countLabel: UILabel!
     var array : [String] = []
   //  let realm = try! Realm()
     var realm : Realm?
@@ -23,6 +24,10 @@ class CategoryViewController: UITableViewController {
         fetchData()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+      tableView.reloadData()
+    }
+    
     //MARK: - tableView methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return category?.count ?? 1
@@ -31,7 +36,7 @@ class CategoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
         //cell.textLabel?.text = array[indexPath.row]
-        cell.textLabel?.text = category?[indexPath.row].categoryName ?? "Nothing here"
+        cell.textLabel?.text = "\(category?[indexPath.row].categoryName ?? "Nothing here")  (\(category![indexPath.row].toDos.filter("completed == %@", false).count))"
         return cell
     }
     

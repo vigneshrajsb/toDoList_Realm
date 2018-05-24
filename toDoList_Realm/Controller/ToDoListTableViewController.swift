@@ -18,7 +18,6 @@ class ToDoListTableViewController: UITableViewController {
     }
     
     
-    
     var realm : Realm?
     
     var toDolist: Results<ToDoItems>?
@@ -46,6 +45,7 @@ class ToDoListTableViewController: UITableViewController {
         //remove the unwrapping below
         let flag = toDolist?[indexPath.row].completed ?? false
         cell.accessoryType = flag ? .checkmark : .none
+
         return cell
     }
     
@@ -77,7 +77,7 @@ class ToDoListTableViewController: UITableViewController {
                 let tempToDo = ToDoItems()
                 tempToDo.item = textfield.text!
                 tempToDo.completed = false
-                tempToDo.dateCreated = Date.init(timeIntervalSinceNow: Double(self.secondsFromGMT))
+                tempToDo.dateCreated = Date.init(timeIntervalSinceNow: 0)
                 
                 self.saveData(toDo: tempToDo)
             }
@@ -119,11 +119,18 @@ class ToDoListTableViewController: UITableViewController {
 extension ToDoListTableViewController : UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         print("search button clicked")
+//        toDolist = toDolist?.filter("item CONTAINS[cd] %@", searchBar.text)
+//        tableView.reloadData()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         //code
-        print("search text did change")
+        if searchBar.text?.count == 0 {
+            fetchData()
+        } else {
+            toDolist = selectedCategory?.toDos.filter("item CONTAINS[cd] %@", searchBar.text).sorted(byKeyPath: "dateCreated").sorted(byKeyPath: "completed")
+            tableView.reloadData()
+        }
     }
     
 }

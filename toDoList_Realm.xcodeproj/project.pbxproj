@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5045A50820B3CA560017F092 /* Catergory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5045A50720B3CA560017F092 /* Catergory.swift */; };
+		5045A50820B3CA560017F092 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5045A50720B3CA560017F092 /* Category.swift */; };
 		5045A50A20B3CFF60017F092 /* ToDoItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5045A50920B3CFF60017F092 /* ToDoItems.swift */; };
 		50471B0C20B3B7A800C3E530 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50471B0B20B3B7A800C3E530 /* AppDelegate.swift */; };
 		50471B0E20B3B7A800C3E530 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50471B0D20B3B7A800C3E530 /* CategoryViewController.swift */; };
@@ -20,7 +20,7 @@
 
 /* Begin PBXFileReference section */
 		3E23EF24C474C32431FB6FD7 /* Pods-toDoList_Realm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-toDoList_Realm.release.xcconfig"; path = "Pods/Target Support Files/Pods-toDoList_Realm/Pods-toDoList_Realm.release.xcconfig"; sourceTree = "<group>"; };
-		5045A50720B3CA560017F092 /* Catergory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catergory.swift; sourceTree = "<group>"; };
+		5045A50720B3CA560017F092 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		5045A50920B3CFF60017F092 /* ToDoItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItems.swift; sourceTree = "<group>"; };
 		50471B0820B3B7A800C3E530 /* toDoList_Realm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = toDoList_Realm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50471B0B20B3B7A800C3E530 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -98,7 +98,7 @@
 		50471B1F20B3B81400C3E530 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5045A50720B3CA560017F092 /* Catergory.swift */,
+				5045A50720B3CA560017F092 /* Category.swift */,
 				5045A50920B3CFF60017F092 /* ToDoItems.swift */,
 			);
 			path = Model;
@@ -238,7 +238,7 @@
 				50471B0E20B3B7A800C3E530 /* CategoryViewController.swift in Sources */,
 				5045A50A20B3CFF60017F092 /* ToDoItems.swift in Sources */,
 				50471B0C20B3B7A800C3E530 /* AppDelegate.swift in Sources */,
-				5045A50820B3CA560017F092 /* Catergory.swift in Sources */,
+				5045A50820B3CA560017F092 /* Category.swift in Sources */,
 				50471B2120B3B90D00C3E530 /* ToDoListTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
