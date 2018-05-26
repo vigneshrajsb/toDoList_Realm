@@ -10,7 +10,7 @@ import UIKit
 import RealmSwift
 
 class ToDoListTableViewController: UITableViewController {
-
+    
     var selectedCategory : Category? {
         didSet{
             fetchData()
@@ -19,11 +19,8 @@ class ToDoListTableViewController: UITableViewController {
     
     
     var realm : Realm?
-    
     var toDolist: Results<ToDoItems>?
-    
     var secondsFromGMT: Int { return TimeZone.current.secondsFromGMT() }
-
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -32,20 +29,20 @@ class ToDoListTableViewController: UITableViewController {
         super.viewDidLoad()
         realm = try! Realm()
         searchBar.delegate = self
+        
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return toDolist?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "toDoCell", for: indexPath)
-       
         cell.textLabel?.text = toDolist?[indexPath.row].item ?? "Nothing to show here"
         //remove the unwrapping below
         let flag = toDolist?[indexPath.row].completed ?? false
         cell.accessoryType = flag ? .checkmark : .none
-
+        
         return cell
     }
     
@@ -65,13 +62,14 @@ class ToDoListTableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
- 
+    
     
     
     @IBAction func addPressed(_ sender: UIBarButtonItem) {
         var textfield = UITextField()
         let alert = UIAlertController(title: "Add", message: "Add item to do here", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
+            //should use the selected categiry to check for null values here, i used text like a beginner
             if textfield.text?.count ?? 0 > 0 {
                 //save data
                 let tempToDo = ToDoItems()
@@ -112,6 +110,9 @@ class ToDoListTableViewController: UITableViewController {
         performSegue(withIdentifier: "toDetail", sender: self)
     }
     
+    @objc func infoButtonTapped(_ sender: UIButton) {
+        print("buttoon tapped \(sender.tag)")
+    }
     
 }
 
@@ -119,8 +120,8 @@ class ToDoListTableViewController: UITableViewController {
 extension ToDoListTableViewController : UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         print("search button clicked")
-//        toDolist = toDolist?.filter("item CONTAINS[cd] %@", searchBar.text)
-//        tableView.reloadData()
+        //        toDolist = toDolist?.filter("item CONTAINS[cd] %@", searchBar.text)
+        //        tableView.reloadData()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -128,9 +129,11 @@ extension ToDoListTableViewController : UISearchBarDelegate {
         if searchBar.text?.count == 0 {
             fetchData()
         } else {
-            toDolist = selectedCategory?.toDos.filter("item CONTAINS[cd] %@", searchBar.text).sorted(byKeyPath: "dateCreated").sorted(byKeyPath: "completed")
+            toDolist = selectedCategory?.toDos.filter("item CONTAINS[cd] %@", searchBar.text ?? "").sorted(byKeyPath: "dateCreated").sorted(byKeyPath: "completed")
             tableView.reloadData()
         }
     }
+    
+    
     
 }

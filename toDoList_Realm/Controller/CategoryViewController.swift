@@ -20,7 +20,7 @@ class CategoryViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         realm = try! Realm()
+        realm = try! Realm()
         fetchData()
     }
     
@@ -41,7 +41,6 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       
         performSegue(withIdentifier: "toDoList", sender: self)
     }
     
