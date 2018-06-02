@@ -8,8 +8,10 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
+import  ChameleonFramework
 
-class ToDoListTableViewController: UITableViewController {
+class ToDoListTableViewController: SwipeTableViewController {
     
     var selectedCategory : Category? {
         didSet{
@@ -17,7 +19,7 @@ class ToDoListTableViewController: UITableViewController {
         }
     }
     
-    
+    var showAll : Bool = false
     var realm : Realm?
     var toDolist: Results<ToDoItems>?
     var secondsFromGMT: Int { return TimeZone.current.secondsFromGMT() }
@@ -27,9 +29,37 @@ class ToDoListTableViewController: UITableViewController {
     
     override func viewDidLoad() { 
         super.viewDidLoad()
+        tableView.separatorStyle = .none
+        
         realm = try! Realm()
         searchBar.delegate = self
         
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        //code
+        guard let colorCode = selectedCategory?.categoryColor else {
+            fatalError("category color doesnt exist")
+        }
+        updateNavBar(withHexCode: colorCode)
+  
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        updateNavBar(withHexCode: "27C2F8")
+    }
+    
+    func updateNavBar(withHexCode colorHexCode : String){
+
+        guard let navBar = navigationController?.navigationBar else { fatalError("nav bar doesnt exist")}
+        guard let color = UIColor(hexString: colorHexCode) else {
+            fatalError("cannot convert hex to UIColor")
+        }
+        navBar.barTintColor = color
+        navBar.tintColor = ContrastColorOf(color, returnFlat: true)
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(color, returnFlat: true)]
+        searchBar.barTintColor = color
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -37,16 +67,21 @@ class ToDoListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "toDoCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = toDolist?[indexPath.row].item ?? "Nothing to show here"
         //remove the unwrapping below
         let flag = toDolist?[indexPath.row].completed ?? false
         cell.accessoryType = flag ? .checkmark : .none
-        
+    
+        if let color = UIColor(hexString: (selectedCategory?.categoryColor)!)?.darken(byPercentage: CGFloat(indexPath.row)/CGFloat(toDolist?.count ?? 1))
+        {
+        cell.backgroundColor = color
+            cell.textLabel?.textColor =  ContrastColorOf(color, returnFlat: true)
+        }
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    fileprivate func update(_ indexPath: IndexPath, _ tableView: UITableView) {
         //code
         if let item = toDolist?[indexPath.row] {
             do {
@@ -62,8 +97,14 @@ class ToDoListTableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //update(indexPath, tableView)
+        //no updates needed when row is selected
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
     
-    
+ 
     
     @IBAction func addPressed(_ sender: UIBarButtonItem) {
         var textfield = UITextField()
@@ -76,6 +117,7 @@ class ToDoListTableViewController: UITableViewController {
                 tempToDo.item = textfield.text!
                 tempToDo.completed = false
                 tempToDo.dateCreated = Date.init(timeIntervalSinceNow: 0)
+                //tempToDo.itemColor = UIColor.randomFlat.hexValue()
                 
                 self.saveData(toDo: tempToDo)
             }
@@ -86,6 +128,13 @@ class ToDoListTableViewController: UITableViewController {
         }
         present(alert, animated:  true)
     }
+    
+    @IBAction func showAllPressed(_ sender: UIBarButtonItem) {
+        showAll = !showAll
+        if showAll {sender.title = "Pending"} else {sender.title = "Show All"}
+        fetchData()
+    }
+    
     
     func saveData(toDo : ToDoItems) {
         do {
@@ -102,24 +151,61 @@ class ToDoListTableViewController: UITableViewController {
     func fetchData() {
         //toDolist = realm.objects(ToDoItems.self)
         navigationItem.title = selectedCategory?.categoryName
-        toDolist = selectedCategory?.toDos.sorted(byKeyPath: "completed")
+        if showAll {
+        toDolist = selectedCategory?.toDos.sorted(byKeyPath: "dateCreated").sorted(byKeyPath: "completed")
+        } else {
+            toDolist = selectedCategory?.toDos.filter("completed == false").sorted(byKeyPath: "dateCreated")
+        }
         tableView.reloadData()
     }
     
-    @IBAction func detailPressed(_ sender: UIButton) {
-        performSegue(withIdentifier: "toDetail", sender: self)
+    override func delete(at indexPath: IndexPath) {
+        if let selectedItem = toDolist?[indexPath.row] {
+        do {
+            try realm?.write {
+                realm?.delete(selectedItem)
+            }
+        } catch { print("error while deleting todo item \(error)")}
+    }
     }
     
-    @objc func infoButtonTapped(_ sender: UIButton) {
-        print("buttoon tapped \(sender.tag)")
+    override func update(at indexPath: IndexPath) {
+        if let selectedItem = toDolist?[indexPath.row] {
+            do{
+                try realm?.write {
+                    selectedItem.completed = !selectedItem.completed
+                    tableView.reloadData()
+                }
+            } catch {
+                print("error while updating To Do iten \(error)")
+            }
+        }
     }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+         guard orientation == .right else { return nil }
+        var Action  = super.tableView(tableView, editActionsForRowAt: indexPath, for: .right)
+        let updateAction = SwipeAction(style: .default, title: buttonTitle(at: indexPath)) { (action, indexPath) in
+            self.update(at: indexPath)
+        }
+        Action?.append(updateAction)
+        return Action
+    }
+    
+    func buttonTitle(at indexPath : IndexPath) -> String {
+        var title = ""
+        if let status = toDolist?[indexPath.row].completed {
+            if status { title = "Toggle"} else { title = "Complete"}
+        }
+         return title
+    }
+
     
 }
-
+    
 //MARK: - search methods
 extension ToDoListTableViewController : UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print("search button clicked")
         //        toDolist = toDolist?.filter("item CONTAINS[cd] %@", searchBar.text)
         //        tableView.reloadData()
     }
@@ -129,11 +215,16 @@ extension ToDoListTableViewController : UISearchBarDelegate {
         if searchBar.text?.count == 0 {
             fetchData()
         } else {
-            toDolist = selectedCategory?.toDos.filter("item CONTAINS[cd] %@", searchBar.text ?? "").sorted(byKeyPath: "dateCreated").sorted(byKeyPath: "completed")
+             var query = ""
+            if showAll {query = "item CONTAINS[cd] %@"} else {query = "item CONTAINS[cd] %@  AND completed == false"}
+            
+            toDolist = selectedCategory?.toDos.filter(query, searchBar.text ?? "").sorted(byKeyPath: "dateCreated").sorted(byKeyPath: "completed")
+            if !showAll {
+             //code
+            }
             tableView.reloadData()
         }
     }
     
-    
-    
 }
+

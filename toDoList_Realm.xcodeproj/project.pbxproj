@@ -15,6 +15,7 @@
 		50471B1320B3B7A900C3E530 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50471B1220B3B7A900C3E530 /* Assets.xcassets */; };
 		50471B1620B3B7A900C3E530 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50471B1420B3B7A900C3E530 /* LaunchScreen.storyboard */; };
 		50471B2120B3B90D00C3E530 /* ToDoListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50471B2020B3B90D00C3E530 /* ToDoListTableViewController.swift */; };
+		508BCD2A20BC69EC00C380B5 /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508BCD2920BC69EC00C380B5 /* SwipeTableViewController.swift */; };
 		AA9CE3CCA7E5B01FCBA76F02 /* Pods_toDoList_Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 706C141CA5664675B0CE63BC /* Pods_toDoList_Realm.framework */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		50471B1520B3B7A900C3E530 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		50471B1720B3B7A900C3E530 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50471B2020B3B90D00C3E530 /* ToDoListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListTableViewController.swift; sourceTree = "<group>"; };
+		508BCD2920BC69EC00C380B5 /* SwipeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewController.swift; sourceTree = "<group>"; };
 		706C141CA5664675B0CE63BC /* Pods_toDoList_Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_toDoList_Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEF0D2AAD77009F47ADD45DF /* Pods-toDoList_Realm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-toDoList_Realm.debug.xcconfig"; path = "Pods/Target Support Files/Pods-toDoList_Realm/Pods-toDoList_Realm.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -91,6 +93,7 @@
 			children = (
 				50471B0D20B3B7A800C3E530 /* CategoryViewController.swift */,
 				50471B2020B3B90D00C3E530 /* ToDoListTableViewController.swift */,
+				508BCD2920BC69EC00C380B5 /* SwipeTableViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -197,13 +200,17 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-toDoList_Realm/Pods-toDoList_Realm-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -239,6 +246,7 @@
 				5045A50A20B3CFF60017F092 /* ToDoItems.swift in Sources */,
 				50471B0C20B3B7A800C3E530 /* AppDelegate.swift in Sources */,
 				5045A50820B3CA560017F092 /* Category.swift in Sources */,
+				508BCD2A20BC69EC00C380B5 /* SwipeTableViewController.swift in Sources */,
 				50471B2120B3B90D00C3E530 /* ToDoListTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,10 +395,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RL4386D4Z;
 				INFOPLIST_FILE = toDoList_Realm/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.VigneshrajSekarBabu.toDoList-Realm";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -406,10 +411,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RL4386D4Z;
 				INFOPLIST_FILE = toDoList_Realm/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.VigneshrajSekarBabu.toDoList-Realm";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

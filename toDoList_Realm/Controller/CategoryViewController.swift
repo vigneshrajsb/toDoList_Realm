@@ -7,9 +7,11 @@
 //
 
 import UIKit
-import  RealmSwift
+import RealmSwift
+import ChameleonFramework
 
-class CategoryViewController: UITableViewController {
+
+class CategoryViewController: SwipeTableViewController {
 
     @IBOutlet weak var countLabel: UILabel!
     var array : [String] = []
@@ -20,12 +22,23 @@ class CategoryViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.separatorStyle = .none
         realm = try! Realm()
         fetchData()
     }
     
+    
+    
     override func viewWillAppear(_ animated: Bool) {
-      tableView.reloadData()
+        guard  let navBar = navigationController?.navigationBar else {
+            fatalError("no nav bar for Category Table VC")
+        }
+        guard let color = UIColor(hexString: "27C2F8") else { fatalError("UI color missing in Category table VC")}
+        navBar.barTintColor = color
+        navBar.tintColor = ContrastColorOf(color, returnFlat: true)
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(color, returnFlat: true)]
+        
+        tableView.reloadData()
     }
     
     //MARK: - tableView methods
@@ -34,9 +47,9 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
-        //cell.textLabel?.text = array[indexPath.row]
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = "\(category?[indexPath.row].categoryName ?? "Nothing here")  (\(category![indexPath.row].toDos.filter("completed == %@", false).count))"
+     cell.backgroundColor = UIColor(hexString: category?[indexPath.row].categoryColor ?? "FFFFFF")
         return cell
     }
     
@@ -54,6 +67,7 @@ class CategoryViewController: UITableViewController {
                 if textEntered.count > 0 {
                     let tempCategory = Category()
                     tempCategory.categoryName = textEntered
+                    tempCategory.categoryColor = UIColor.randomFlat.hexValue()
                     self.saveData(paramCategory: tempCategory)
                 }
                 
@@ -96,6 +110,21 @@ class CategoryViewController: UITableViewController {
     func fetchData() {
         category = realm?.objects(Category.self)
     }
+    
+    
+    override func delete(at indexPath: IndexPath) {
+        if let paramCategory = self.category?[indexPath.row] {
+            do {
+                try realm?.write {
+                    realm?.delete(paramCategory)
+                }
+            }
+            catch {
+                print("error while deleting category : \(error)")
+            }
+        }
+    }
 
 }
+
 

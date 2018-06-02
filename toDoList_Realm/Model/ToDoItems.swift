@@ -14,5 +14,6 @@ class ToDoItems: Object {
     @objc dynamic var completed : Bool = false
     @objc dynamic var dateCreated : Date? = nil
     @objc dynamic var dueDate : Date? = nil
+    @objc dynamic var itemColor : String? = ""
     var parentCategory = LinkingObjects(fromType: Category.self, property: "toDos")
 }

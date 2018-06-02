@@ -20,16 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print(Realm.Configuration.defaultConfiguration.fileURL!)
         
         Realm.Configuration.defaultConfiguration = Realm.Configuration(
-            schemaVersion: 1,
+            schemaVersion: 2,
             migrationBlock: { migration, oldSchemaVersion in
-                if (oldSchemaVersion < 1) {
-                    // The enumerateObjects(ofType:_:) method iterates
-                    // over every Person object stored in the Realm file
+                if (oldSchemaVersion < 2) {
+                    migration.enumerateObjects(ofType: Category.className()) { oldObject, newObject in
+                        newObject!["categoryColor"] = ""
+                    }
                     migration.enumerateObjects(ofType: ToDoItems.className()) { oldObject, newObject in
-                        // combine name fields into a single field
-                        
-                        newObject!["dateCreated"] = nil
-                        newObject!["dueDate"] = nil
+                        newObject!["itemColor"] = ""
                     }
                 }
         })
